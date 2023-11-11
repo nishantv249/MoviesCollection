@@ -10,6 +10,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runInterruptible
 import okhttp3.OkHttpClient
+import okio.BufferedSource
 import retrofit2.Retrofit
 import java.net.SocketTimeoutException
 import java.util.concurrent.TimeoutException
@@ -27,7 +28,7 @@ internal class Engine(private val cachePool: CachePool) {
     )  {
         val bitmap = Retry{
             runInterruptible(coroutineContext) {
-                getBitmap(url,null,width,height)
+                getBitmap(url,cachePool.getBitMap(),width,height)
             }
         }()
         function.invoke(bitmap)
@@ -58,18 +59,27 @@ internal class Engine(private val cachePool: CachePool) {
         width: Int,
         height: Int,
     ) : Bitmap?  {
+        var buffer : BufferedSource? = null
         return try {
             val options = BitmapFactory.Options()
             options.inJustDecodeBounds = true
+            options.inMutable = true
+            options.inBitmap = reusableBitmap
             val bounds = apiService.getBytes(url).execute()
-            BitmapFactory.decodeStream(bounds.body()?.byteStream(), null, options)
+            buffer = bounds.body()?.source()
+            BitmapFactory.decodeStream (buffer?.peek()?.inputStream(), null,  options)
             options.inSampleSize = calculateSampleSize(options, width, height)
             options.inJustDecodeBounds = false
-            val decodeStream = apiService.getBytes(url).execute()
-            BitmapFactory.decodeStream(decodeStream.body()?.byteStream(), null, options)
+            BitmapFactory.decodeStream (buffer?.peek()?.inputStream(), null,  options)
         } catch ( e : Exception) {
             println(" $url exception $e ")
             null
+        }finally {
+            try {
+                buffer?.close()
+            }catch (_ : Exception){
+
+            }
         }
     }
 
