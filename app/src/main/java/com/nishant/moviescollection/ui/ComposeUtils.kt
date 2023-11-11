@@ -28,3 +28,4 @@ fun <T> LoadingContent(state: Result<T>?, content: @Composable (t: T) -> Unit) {
     }
 }
 
+

@@ -1,8 +1,11 @@
 package com.nishant.moviescollection.network
 import com.nishant.moviescollection.network.models.*
+import okhttp3.ResponseBody
+import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.Url
 
 interface ApiService {
 
@@ -49,5 +52,8 @@ interface ApiService {
     suspend fun artistDetail(
         @Path("personId") personId: Int, @Query("api_key") api_key: String = ApiURL.API_KEY
     ): ArtistDetail
+
+    @GET
+    fun getBytes(@Url url : String) : Call<ResponseBody>
 
 }

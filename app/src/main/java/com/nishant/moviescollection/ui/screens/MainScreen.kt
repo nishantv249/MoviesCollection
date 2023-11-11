@@ -3,6 +3,7 @@ package com.nishant.moviescollection.ui.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -14,6 +15,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import com.nishant.moviescollection.R
+import com.nishant.moviescollection.il.painter.rememberAsyncILPainter
 import com.nishant.moviescollection.ui.currentRoute
 import com.nishant.moviescollection.network.ApiURL
 import com.nishant.moviescollection.network.models.MovieItem
@@ -109,9 +112,9 @@ fun BottomNavigationUI(navHostController: NavHostController, genreId: String) {
 @Composable
 fun MovieItem(movieItem: MovieItem, onMovieClicked: (id: Int) -> Unit) {
 
-    Column {
+    Column (modifier = Modifier.fillMaxWidth().wrapContentHeight()){
         val painter =
-            rememberAsyncImagePainter(model = ApiURL.IMAGE_URL.plus(movieItem.backdropPath))
+            rememberAsyncILPainter(url = ApiURL.IMAGE_URL.plus(movieItem.backdropPath))
         Image(
             painter = painter, contentDescription = "",
             Modifier
@@ -124,9 +127,8 @@ fun MovieItem(movieItem: MovieItem, onMovieClicked: (id: Int) -> Unit) {
             contentScale = ContentScale.Crop
         )
         Spacer(modifier = Modifier
-            .height(8.dp)
-            .fillMaxWidth())
-        Text(text = movieItem.title)
+            .height(8.dp))
+        Text(text = movieItem.title, maxLines = 1)
     }
 
 }

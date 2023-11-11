@@ -115,3 +115,5 @@ fun PersonalInfo(title: String, info: String) {
         )
     }
 }
+
+

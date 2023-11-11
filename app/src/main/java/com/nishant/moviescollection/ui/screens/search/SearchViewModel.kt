@@ -1,13 +1,13 @@
 package com.nishant.moviescollection.ui.screens.search
 
+import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nishant.moviescollection.network.Result
 import com.nishant.moviescollection.network.models.BaseModel
 import com.nishant.moviescollection.repo.IMoviesRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 import kotlin.time.Duration
@@ -32,7 +32,8 @@ class SearchViewModel @Inject constructor(private val moviesRepo: IMoviesRepo) :
             Duration.ZERO), Result.Empty)
 
     fun search(text: String){
-        searchRequestFlow.value = text
+            searchRequestFlow.value = text
     }
 
 }
+

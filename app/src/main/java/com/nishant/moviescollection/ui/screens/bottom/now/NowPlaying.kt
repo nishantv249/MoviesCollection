@@ -7,7 +7,9 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -17,6 +19,10 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.nishant.moviescollection.ui.screens.MovieItem
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 @Composable
 fun NowPlaying(genreId : String,onMovieClicked : (id : Int) -> Unit,nowPlayingViewModel: NowPlayingViewModel = hiltViewModel(),){
@@ -51,5 +57,7 @@ fun NowPlaying(genreId : String,onMovieClicked : (id : Int) -> Unit,nowPlayingVi
             }
         }
     }
+
+
 
 }

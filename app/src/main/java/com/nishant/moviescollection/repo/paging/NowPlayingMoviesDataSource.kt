@@ -14,7 +14,7 @@ class NowPlayingMoviesDataSource(private val genreId : String, private val apiSe
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieItem> {
         return try{
             val page = params.key?:1
-            val pageList = apiService.nowPlayingMovieList(page,genreId)
+            val pageList =   apiService.nowPlayingMovieList(page,genreId)
           LoadResult.Page(pageList.results,if(page == 1) null else page-1,pageList.page+1)
         }catch(e : Exception) {
             LoadResult.Error(e)

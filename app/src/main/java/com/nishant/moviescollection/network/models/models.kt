@@ -1,5 +1,6 @@
 package com.nishant.moviescollection.network.models
 
+import androidx.compose.runtime.Stable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
@@ -15,13 +16,12 @@ data class BaseModel(
     val totalResults: Int
 )
 
+
 data class MovieItem(
     @SerializedName("adult")
     val adult: Boolean,
     @SerializedName("backdrop_path")
     val backdropPath: String,
-    @SerializedName("genre_ids")
-    val genreIds: List<Int>,
     @SerializedName("id")
     val id: Int,
     @SerializedName("original_language")

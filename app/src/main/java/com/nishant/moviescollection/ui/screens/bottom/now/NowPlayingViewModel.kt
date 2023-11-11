@@ -22,9 +22,7 @@ class NowPlayingViewModel @Inject constructor(private val moviesRepo: IMoviesRep
                                 .cachedIn(viewModelScope)
 
     fun onNewGenre(genreId : String){
-        viewModelScope.launch {
-            genreIdFlow.value = genreId
-        }
+        genreIdFlow.value = genreId
     }
 
 }
