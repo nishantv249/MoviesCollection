@@ -63,7 +63,6 @@ object ImageLoaderImpl : ImageLoader {
             } else {
                 val request = Request(url, height, width) {
                     if (it != null) {
-                        cache.put(url, it)
                         deferredMap.remove(url)
                         cancellableContinuation.resume(it)
                     } else {

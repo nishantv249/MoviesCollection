@@ -2,6 +2,7 @@ package com.nishant.moviescollection.il.engine
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import androidx.annotation.Px
 import com.nishant.moviescollection.il.CachePool
 import com.nishant.moviescollection.network.ApiService
@@ -16,6 +17,7 @@ import java.io.InterruptedIOException
 import java.net.SocketTimeoutException
 import java.util.concurrent.TimeoutException
 import kotlin.coroutines.coroutineContext
+import kotlin.math.roundToInt
 
 internal class Engine(private val cachePool: CachePool) {
 
@@ -27,10 +29,14 @@ internal class Engine(private val cachePool: CachePool) {
         height: Int,
         function: (bitMap: Bitmap?) -> Unit
     )  {
-        val bitmap =
+        val bitmap = Retry {
             runInterruptible(coroutineContext) {
-                getBitmap(url,cachePool.getBitMap(),width,height)
+                getBitmap(url, cachePool.getBitMap(), width, height)
             }
+        }()
+        if (bitmap != null) {
+            cachePool.put(url, bitmap = bitmap)
+        }
         function.invoke(bitmap)
     }
 
@@ -69,7 +75,12 @@ internal class Engine(private val cachePool: CachePool) {
             BitmapFactory.decodeStream (buffer?.peek()?.inputStream(), null,  options)
             options.inSampleSize = calculateSampleSize(options, width, height)
             options.inJustDecodeBounds = false
-            BitmapFactory.decodeStream (buffer?.peek()?.inputStream(), null,  options)
+            val bitmap = BitmapFactory.decodeStream (buffer?.peek()?.inputStream(), null,  options)
+            if (bitmap != null && options.inSampleSize == 1 && (width > options.outWidth || height > options.outHeight)  ) {
+                crop(bitmap,width,height,0.5f,0.5f)
+            }else{
+                bitmap
+            }
         } catch ( e : Exception) {
             if( e is CancellationException){
                 throw  e
@@ -77,7 +88,6 @@ internal class Engine(private val cachePool: CachePool) {
             if( e is InterruptedIOException && Thread.interrupted()){
                 throw CancellationException("job cancelled ").initCause(e)
             }
-            println(" $url exception $e ")
             null
         }finally {
             try {
@@ -87,8 +97,35 @@ internal class Engine(private val cachePool: CachePool) {
             }
         }
     }
-
 }
+
+private fun crop(
+    src: Bitmap, w: Int, h: Int,
+    horizontalCenterPercent: Float, verticalCenterPercent: Float
+): Bitmap {
+    val srcWidth = src.width
+    val srcHeight = src.height
+    if (w == srcWidth && h == srcHeight) {
+        return src
+    }
+    val m = Matrix()
+    val scale = (w.toFloat() / srcWidth).coerceAtLeast(h.toFloat() / srcHeight)
+    m.setScale(scale, scale)
+    var srcX: Int
+    var srcY: Int
+    val srcCroppedW: Int = (w / scale).roundToInt()
+    val srcCroppedH: Int = (h / scale).roundToInt()
+    srcX = (srcWidth * horizontalCenterPercent - srcCroppedW / 2).toInt()
+    srcY = (srcHeight * verticalCenterPercent - srcCroppedH / 2).toInt()
+    // Nudge srcX and srcY to be within the bounds of src
+    srcX = srcX.coerceAtMost(srcWidth - srcCroppedW).coerceAtLeast(0)
+    srcY = srcY.coerceAtMost(srcHeight - srcCroppedH).coerceAtLeast(0)
+    return Bitmap.createBitmap(
+        src, srcX, srcY, srcCroppedW, srcCroppedH, m,
+        true
+    )
+}
+
 
 private class Retry<T>(private var numOfRetries: Int = 3, val block: suspend () -> T?) {
 

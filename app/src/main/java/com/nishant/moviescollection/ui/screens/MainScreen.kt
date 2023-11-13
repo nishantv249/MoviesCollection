@@ -112,7 +112,9 @@ fun BottomNavigationUI(navHostController: NavHostController, genreId: String) {
 @Composable
 fun MovieItem(movieItem: MovieItem, onMovieClicked: (id: Int) -> Unit) {
 
-    Column (modifier = Modifier.fillMaxWidth().wrapContentHeight()){
+    Column (modifier = Modifier
+        .fillMaxWidth()
+        .wrapContentHeight()){
         val painter =
             rememberAsyncILPainter(url = ApiURL.IMAGE_URL.plus(movieItem.backdropPath))
         Image(
