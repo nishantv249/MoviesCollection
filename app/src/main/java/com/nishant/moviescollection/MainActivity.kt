@@ -25,12 +25,14 @@ import com.nishant.moviescollection.il.painter.rememberAsyncILPainter
 import com.nishant.moviescollection.ui.NavGraph
 import com.nishant.moviescollection.ui.theme.MoviesdupTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
@@ -56,16 +58,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-
-    @Composable
-    private fun showImage() {
-        //rememberAsyncImagePainter(model = )
-
-        val painter = rememberAsyncILPainter(url = "https://img.freepik.com/free-vector/diwali-festival-patterned-background_53876-118874.jpg?w=360&t=st=1699424296~exp=1699424896~hmac=d05b7266dc402b48ebd4f175c2f4c83b7382974b92c058f2ecac8530d74a03b3" )
-
-        Image(painter = painter, contentDescription = "",
-            modifier = Modifier.size(120.dp))
     }
 
 }

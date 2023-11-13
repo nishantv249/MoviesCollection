@@ -12,6 +12,7 @@ import kotlinx.coroutines.runInterruptible
 import okhttp3.OkHttpClient
 import okio.BufferedSource
 import retrofit2.Retrofit
+import java.io.InterruptedIOException
 import java.net.SocketTimeoutException
 import java.util.concurrent.TimeoutException
 import kotlin.coroutines.coroutineContext
@@ -26,11 +27,10 @@ internal class Engine(private val cachePool: CachePool) {
         height: Int,
         function: (bitMap: Bitmap?) -> Unit
     )  {
-        val bitmap = Retry{
+        val bitmap =
             runInterruptible(coroutineContext) {
                 getBitmap(url,cachePool.getBitMap(),width,height)
             }
-        }()
         function.invoke(bitmap)
     }
 
@@ -64,7 +64,6 @@ internal class Engine(private val cachePool: CachePool) {
             val options = BitmapFactory.Options()
             options.inJustDecodeBounds = true
             options.inMutable = true
-            options.inBitmap = reusableBitmap
             val bounds = apiService.getBytes(url).execute()
             buffer = bounds.body()?.source()
             BitmapFactory.decodeStream (buffer?.peek()?.inputStream(), null,  options)
@@ -72,6 +71,12 @@ internal class Engine(private val cachePool: CachePool) {
             options.inJustDecodeBounds = false
             BitmapFactory.decodeStream (buffer?.peek()?.inputStream(), null,  options)
         } catch ( e : Exception) {
+            if( e is CancellationException){
+                throw  e
+            }
+            if( e is InterruptedIOException && Thread.interrupted()){
+                throw CancellationException("job cancelled ").initCause(e)
+            }
             println(" $url exception $e ")
             null
         }finally {

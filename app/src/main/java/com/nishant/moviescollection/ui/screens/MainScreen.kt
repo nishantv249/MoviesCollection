@@ -124,7 +124,7 @@ fun MovieItem(movieItem: MovieItem, onMovieClicked: (id: Int) -> Unit) {
                     onMovieClicked(movieItem.id)
                 }
                 .clip(RoundedCornerShape(8.dp)),
-            contentScale = ContentScale.FillBounds
+            contentScale = ContentScale.Crop
         )
         Spacer(modifier = Modifier
             .height(8.dp))
