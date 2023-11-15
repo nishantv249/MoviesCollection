@@ -5,8 +5,6 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import androidx.annotation.Px
 import com.nishant.moviescollection.il.CachePool
-import com.nishant.moviescollection.network.ApiService
-import com.nishant.moviescollection.network.ApiURL
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runInterruptible
@@ -21,7 +19,7 @@ import kotlin.math.roundToInt
 
 internal class Engine(private val cachePool: CachePool) {
 
-    val apiService : ApiService = Retrofit.Builder().baseUrl(ApiURL.BASE_URL).client(OkHttpClient()).build().create(ApiService::class.java)
+    //val apiService : ApiService = Retrofit.Builder().baseUrl(ApiURL.BASE_URL).client(OkHttpClient()).build().create(ApiService::class.java)
 
     suspend operator fun invoke(
         url: String,
@@ -29,13 +27,14 @@ internal class Engine(private val cachePool: CachePool) {
         height: Int,
         function: (bitMap: Bitmap?) -> Unit
     )  {
-        val bitmap = Retry {
+        val bitmap =
             runInterruptible(coroutineContext) {
-                getBitmap(url, cachePool.getBitMap(), width, height)
+                //getBitmap(url, cachePool.getBitMap(), width, height)
+                null
             }
-        }()
+
         if (bitmap != null) {
-            cachePool.put(url, bitmap = bitmap)
+            //cachePool.put(url, bitmap = bitmap)
         }
         function.invoke(bitmap)
     }
@@ -58,7 +57,7 @@ internal class Engine(private val cachePool: CachePool) {
         }
         return inSampleSize
     }
-
+/*
     private  fun getBitmap(
         url: String,
         reusableBitmap: Bitmap?,
@@ -96,7 +95,7 @@ internal class Engine(private val cachePool: CachePool) {
 
             }
         }
-    }
+    }*/
 }
 
 private fun crop(
@@ -127,12 +126,12 @@ private fun crop(
 }
 
 
-private class Retry<T>(private var numOfRetries: Int = 3, val block: suspend () -> T?) {
+private class Retry<T>(private var numOfRetries: Int = 3, val block: () -> T?) {
 
     private var timeout = 1
     private var delay: Long = 0
 
-    suspend operator fun invoke(): T? {
+     suspend operator fun invoke(): T? {
         delay(delay)
         return try {
             block()
@@ -141,7 +140,6 @@ private class Retry<T>(private var numOfRetries: Int = 3, val block: suspend () 
                 throw e
             }
             if ((e is TimeoutException || e is SocketTimeoutException) && numOfRetries > 0) {
-                println("retrying $numOfRetries")
                 timeout *= 2
                 delay += timeout * 1000
                 numOfRetries -= 1
