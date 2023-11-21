@@ -59,6 +59,7 @@ dependencies {
 
     implementation("androidx.room:room-paging:2.6.0")
 
+    implementation ("androidx.paging:paging-compose:3.2.1")
 
 
     testImplementation("junit:junit:4.13.2")

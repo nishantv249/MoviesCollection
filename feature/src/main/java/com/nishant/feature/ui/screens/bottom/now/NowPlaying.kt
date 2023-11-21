@@ -17,8 +17,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.flowWithLifecycle
 import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.nishant.core.network.models.MovieItemDto
 import com.nishant.feature.ui.screens.MovieItem
+import com.nishant.feature.ui.screens.MoviesVerticalGrid
 
 @Composable
 fun NowPlaying(genreId : String,onMovieClicked : (id : Int) -> Unit,nowPlayingViewModel: NowPlayingViewModel = hiltViewModel(),){
@@ -27,33 +30,9 @@ fun NowPlaying(genreId : String,onMovieClicked : (id : Int) -> Unit,nowPlayingVi
     }
 
     val lifecycle = LocalLifecycleOwner.current.lifecycle
-
     val moviesList = remember(lifecycle,nowPlayingViewModel.nowPlayingPagingFlow) {
         nowPlayingViewModel.nowPlayingPagingFlow.flowWithLifecycle(lifecycle)
     }.collectAsLazyPagingItems()
 
-    if(moviesList.loadState.refresh is LoadState.Loading){
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
-    }else{
-        LazyVerticalGrid(columns = GridCells.Fixed(2) ,
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier.padding(8.dp)) {
-
-        items(moviesList.itemCount) {
-            moviesList[it]?.let { it1 -> MovieItem(movieItem = it1, onMovieClicked) }
-        }
-            if(moviesList.loadState.append is LoadState.Loading){
-                item (span = { GridItemSpan(2)}){
-                    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator()
-                    }
-                }
-            }
-        }
-    }
-
-
-
+    MoviesVerticalGrid(moviesList,onMovieClicked)
 }

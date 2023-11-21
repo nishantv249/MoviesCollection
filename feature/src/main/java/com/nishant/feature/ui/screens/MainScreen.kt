@@ -3,6 +3,9 @@ package com.nishant.feature.ui.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -14,6 +17,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import coil.compose.rememberAsyncImagePainter
 import com.nishant.core.network.api.MoviesApiService
 import com.nishant.core.network.models.MovieItemDto
@@ -62,7 +67,7 @@ fun MainScreen(navHostController: NavHostController,
                 .fillMaxSize()
                 .padding(it), contentAlignment = Alignment.Center
         ) {
-            NowPlaying(genreId = "", onMovieClicked)
+            NowPlaying(genreId = genreId, onMovieClicked)
         }
     }
 
@@ -71,7 +76,7 @@ fun MainScreen(navHostController: NavHostController,
 @Composable
 fun BottomNavigationUI(navHostController: NavHostController, genreId: String) {
     BottomNavigation {
-        val list = listOf(Screen.Home, Screen.Popular)
+        val list = listOf(Screen.Home, Screen.Popular,Screen.TopRated)
         var selectedItem by remember {
             mutableStateOf(Screen.Home.route)
         }
@@ -106,6 +111,35 @@ fun BottomNavigationUI(navHostController: NavHostController, genreId: String) {
     }
 
 }
+
+@Composable
+fun MoviesVerticalGrid(
+    moviesList: LazyPagingItems<MovieItemDto>,
+    onMovieClicked: (id: Int) -> Unit
+) {
+    if(moviesList.loadState.refresh is LoadState.Loading){
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+    }else{
+        LazyVerticalGrid(columns = GridCells.Fixed(2) ,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier.padding(8.dp)) {
+
+            items(moviesList.itemCount) {
+                moviesList[it]?.let { it1 -> MovieItem(movieItem = it1, onMovieClicked) }
+            }
+            if(moviesList.loadState.append is LoadState.Loading){
+                item (span = { GridItemSpan(2) }){
+                    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 @Composable
 fun MovieItem(movieItem: MovieItemDto, onMovieClicked: (id: Int) -> Unit) {

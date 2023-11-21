@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import com.nishant.core.data.GenreRepository
 import com.nishant.core.data.OfflineFirstGenreRepo
+import com.nishant.core.data.mediator.NowPlayingItemsMediator
+import com.nishant.core.datastore.MoviesPrefs
 import com.nishant.core.db.MoviesDb
 import com.nishant.core.db.dao.GenreDao
 import com.nishant.core.network.api.MoviesApiService
@@ -28,6 +30,11 @@ object MoviesModule {
     }
 
     @Provides
+    fun getPreferenceManager(@ApplicationContext context: Context) : MoviesPrefs {
+        return MoviesPrefs(context)
+    }
+
+    @Provides
     fun getGson() : GsonConverterFactory {
         return GsonConverterFactory.create()
     }
@@ -45,7 +52,8 @@ object MoviesModule {
 
     @Provides
     fun getDb(@ApplicationContext context: Context) : MoviesDb{
-        return Room.databaseBuilder(context.applicationContext,MoviesDb::class.java,"movies.db")
+        return Room.databaseBuilder(context.applicationContext,MoviesDb::class.java,
+            "movies.db").fallbackToDestructiveMigration()
             .build()
     }
 
@@ -55,13 +63,21 @@ object MoviesModule {
     }
 
     @Provides
-    fun getRepo(apiService: MoviesApiService,genreDao: GenreDao) : IMoviesRepo {
-        return MoviesRepo(apiService)
+    fun getNowPlayingItemMediator(moviesDb: MoviesDb,moviesApiService: MoviesApiService,
+                                  moviesPrefs: MoviesPrefs) : NowPlayingItemsMediator{
+        return NowPlayingItemsMediator(moviesDb,moviesApiService,moviesPrefs)
+    }
+
+    @Provides
+    fun getRepo(apiService: MoviesApiService,nowPlayingItemsMediator: NowPlayingItemsMediator,moviesDb: MoviesDb) : IMoviesRepo {
+        return MoviesRepo(apiService,nowPlayingItemsMediator,moviesDb.nowPlayingMovieDao())
     }
 
     @Provides
     fun getGenreRepo(genreDao: GenreDao,apiService: MoviesApiService) : GenreRepository {
         return OfflineFirstGenreRepo(genreDao,apiService)
     }
+
+
 
 }

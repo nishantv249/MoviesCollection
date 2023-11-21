@@ -77,7 +77,6 @@ dependencies {
 
     //implementation "androidx.compose.material3:material3:1.2.0-alpha07"
 
-    implementation "androidx.paging:paging-compose:3.2.1"
 
     implementation "androidx.lifecycle:lifecycle-runtime-compose:2.7.0-alpha03"
 

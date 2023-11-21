@@ -1,6 +1,7 @@
 package com.nishant.core.repo
 
 import androidx.paging.PagingData
+import com.nishant.core.db.entity.NowPlayingMovieItemEntity
 import com.nishant.core.network.models.ArtistDetailDto
 import com.nishant.core.network.models.ArtistDto
 import com.nishant.core.network.models.MovieDetailDto
@@ -14,7 +15,9 @@ interface IMoviesRepo {
 
     fun getPopularMovies(genreId:String) : Flow<PagingData<MovieItemDto>>
 
-    fun getNowPlayingMovies(genreId: String) :Flow<PagingData<MovieItemDto>>
+    fun getNowPlayingMovies(genreId: String) : Flow<PagingData<MovieItemDto>>
+
+    fun getTopRatedMovies(genreId: String) : Flow<PagingData<MovieItemDto>>
 
     suspend fun getMovieDetail(movieId : Int) : MovieDetailDto
 

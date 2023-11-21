@@ -26,7 +26,3 @@ class OfflineFirstGenreRepo @Inject constructor(private val genreDao: GenreDao,
         }
     }
 }
-
-private fun GenreDto.toEntity() : GenreEntity{
-    return GenreEntity(id = id,name = name)
-}
