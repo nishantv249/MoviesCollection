@@ -13,6 +13,7 @@ import com.nishant.core.network.models.MoviesDto
 import com.nishant.core.repo.paging.NowPlayingMoviesDataSource
 import com.nishant.core.repo.paging.PopularPagingDataSource
 import com.nishant.core.repo.paging.TopRatedDataSource
+import com.nishant.core.repo.paging.UpcomingMoviesDataSource
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
@@ -42,6 +43,12 @@ class MoviesRepo @Inject constructor(
     override fun getTopRatedMovies(genreId: String): Flow<PagingData<MovieItemDto>> {
         return Pager(PagingConfig(20),  pagingSourceFactory = {
             TopRatedDataSource(genreId,apiService)
+        }).flow
+    }
+
+    override fun getUpcomingMovies(genreId: String): Flow<PagingData<MovieItemDto>> {
+        return Pager(PagingConfig(20),  pagingSourceFactory = {
+            UpcomingMoviesDataSource(genreId,apiService)
         }).flow
     }
 

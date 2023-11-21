@@ -15,6 +15,7 @@ import com.nishant.feature.ui.screens.artist.ArtistDetail
 import com.nishant.feature.ui.screens.bottom.popular.PopularRoute
 import com.nishant.feature.ui.screens.bottom.top.TopRated
 import com.nishant.feature.ui.screens.bottom.top.TopRatedRoute
+import com.nishant.feature.ui.screens.bottom.upcoming.UpcomingRoute
 import com.nishant.feature.ui.screens.detail.MovieDetail
 import com.nishant.feature.ui.screens.search.SearchScreen
 
@@ -46,6 +47,13 @@ fun NavGraph(genreId: String) {
             }
         }
 
+        composable(Screen.Upcoming.route){
+            UpcomingRoute(navController, onSearch = {
+                navController.navigate("search")
+            }){
+                navController.navigate("detail".plus("/").plus(it))
+            }
+        }
 
         composable("search"){
             SearchScreen(onMovieClicked = {

@@ -76,7 +76,7 @@ fun MainScreen(navHostController: NavHostController,
 @Composable
 fun BottomNavigationUI(navHostController: NavHostController, genreId: String) {
     BottomNavigation {
-        val list = listOf(Screen.Home, Screen.Popular,Screen.TopRated)
+        val list = listOf(Screen.Home, Screen.Popular,Screen.TopRated,Screen.Upcoming)
         var selectedItem by remember {
             mutableStateOf(Screen.Home.route)
         }
@@ -153,7 +153,7 @@ fun MovieItem(movieItem: MovieItemDto, onMovieClicked: (id: Int) -> Unit) {
             painter = painter, contentDescription = "",
             Modifier
                 .fillMaxWidth()
-                .height(120.dp)
+                .height(240.dp)
                 .clickable {
                     onMovieClicked(movieItem.id)
                 }

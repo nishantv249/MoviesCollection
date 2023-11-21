@@ -41,7 +41,7 @@ interface MoviesApiService {
     ): MoviesDto
 
     @GET("movie/upcoming")
-    suspend fun upcomingMovieList(
+    suspend fun getUpcomingMovies(
         @Query("page") page: Int,
         @Query("with_genres") genreId: String?,
         @Query("api_key") apiKey: String = API_KEY

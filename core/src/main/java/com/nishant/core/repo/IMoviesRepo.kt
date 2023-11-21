@@ -19,6 +19,8 @@ interface IMoviesRepo {
 
     fun getTopRatedMovies(genreId: String) : Flow<PagingData<MovieItemDto>>
 
+    fun getUpcomingMovies(genreId: String) : Flow<PagingData<MovieItemDto>>
+
     suspend fun getMovieDetail(movieId : Int) : MovieDetailDto
 
     suspend fun getRecommendedMovies(movieId : Int) : MoviesDto
