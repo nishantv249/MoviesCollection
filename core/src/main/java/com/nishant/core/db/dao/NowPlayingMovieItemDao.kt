@@ -23,5 +23,6 @@ interface NowPlayingMovieItemDao {
     suspend fun deleteAll()
 
     @Query("Select * from NowPlayingMovieItemEntity")
-    fun getPagingSource() : PagingSource<Int,NowPlayingMovieItemEntity>
+    fun getAll() : PagingSource<Int,NowPlayingMovieItemEntity>
+
 }

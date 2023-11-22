@@ -64,7 +64,8 @@ fun MovieDetail(
                 .verticalScroll(rememberScrollState())
                 .weight(1f)) {
                 val thumb = movieDetailI.backdrop_path
-                val painter = rememberAsyncImagePainter(model = MoviesApiService.IMAGE_URL.plus(thumb))
+                val painter = rememberAsyncImagePainter(model = MoviesApiService.IMAGE_URL.plus(thumb),
+                    contentScale = ContentScale.FillBounds)
                 Image(
                     painter = painter, contentDescription = "", modifier = Modifier
                         .fillMaxWidth()

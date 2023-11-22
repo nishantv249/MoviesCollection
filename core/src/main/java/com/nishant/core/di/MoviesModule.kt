@@ -11,6 +11,7 @@ import com.nishant.core.db.dao.GenreDao
 import com.nishant.core.network.api.MoviesApiService
 import com.nishant.core.repo.IMoviesRepo
 import com.nishant.core.repo.MoviesRepo
+import com.nishant.core.repo.paging.OfflineNPMDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -53,7 +54,8 @@ object MoviesModule {
     @Provides
     fun getDb(@ApplicationContext context: Context) : MoviesDb{
         return Room.databaseBuilder(context.applicationContext,MoviesDb::class.java,
-            "movies.db").fallbackToDestructiveMigration()
+            "movies.db")
+            .fallbackToDestructiveMigration()
             .build()
     }
 
@@ -69,8 +71,14 @@ object MoviesModule {
     }
 
     @Provides
-    fun getRepo(apiService: MoviesApiService,nowPlayingItemsMediator: NowPlayingItemsMediator,moviesDb: MoviesDb) : IMoviesRepo {
-        return MoviesRepo(apiService,nowPlayingItemsMediator,moviesDb.nowPlayingMovieDao())
+    fun getOfflineNPMDataSource(moviesDb: MoviesDb) : OfflineNPMDataSource{
+        return OfflineNPMDataSource(moviesDb)
+    }
+
+    @Provides
+    fun getRepo(apiService: MoviesApiService,nowPlayingItemsMediator: NowPlayingItemsMediator
+                ,moviesDb: MoviesDb,offlineNPMDataSource: OfflineNPMDataSource) : IMoviesRepo {
+        return MoviesRepo(apiService,nowPlayingItemsMediator,moviesDb.nowPlayingMovieDao(),moviesDb)
     }
 
     @Provides

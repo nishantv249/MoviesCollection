@@ -21,12 +21,13 @@ import com.nishant.feature.ui.screens.MovieItem
 fun SearchScreen(searchViewModel: SearchViewModel = hiltViewModel(),
                  onMovieClicked : (id : Int) -> Unit, onBackPressed : () -> Unit) {
 
-    val searchResult = searchViewModel.flow.collectAsStateWithLifecycle()
+    val searchResult = searchViewModel.searchResultFlow.collectAsStateWithLifecycle()
 
     Column(modifier = Modifier.fillMaxSize()) {
         SearchBar(onBackPressed) {
             searchViewModel.search(it)
         }
+
         SearchResult(searchResult,onMovieClicked)
     }
 }
@@ -44,7 +45,8 @@ fun SearchResult(searchResult: State<LoadingState<MoviesDto>>, onMovieClicked: (
             is LoadingState.Success -> {
                 val list = (searchResult.value as LoadingState.Success<MoviesDto>).t
                 LazyVerticalGrid(columns = GridCells.Fixed(2) , verticalArrangement =
-                Arrangement.spacedBy(16.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)){
+                Arrangement.spacedBy(16.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ,modifier = Modifier.padding(8.dp)){
                     items(list.results.size){ it1->
                         MovieItem(movieItem = list.results[it1]) { id ->
                             onMovieClicked(id)

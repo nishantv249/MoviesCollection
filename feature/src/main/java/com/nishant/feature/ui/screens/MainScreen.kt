@@ -148,7 +148,7 @@ fun MovieItem(movieItem: MovieItemDto, onMovieClicked: (id: Int) -> Unit) {
         .fillMaxWidth()
         .wrapContentHeight()){
         val painter =
-            rememberAsyncImagePainter(model = MoviesApiService.IMAGE_URL.plus(movieItem.backdropPath))
+            rememberAsyncImagePainter(model = MoviesApiService.IMAGE_URL.plus(movieItem.posterPath))
         Image(
             painter = painter, contentDescription = "",
             Modifier

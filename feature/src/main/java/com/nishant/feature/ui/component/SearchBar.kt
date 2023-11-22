@@ -15,7 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import com.nishant.moviescollection.ui.theme.Purple500
+
+
+val Purple500 = Color(0xFF6200EE)
 
 @Composable
 fun SearchBar(onBackPressed : () ->Unit,onSearch : (query : String) -> Unit) {
@@ -48,7 +50,7 @@ fun SearchBar(onBackPressed : () ->Unit,onSearch : (query : String) -> Unit) {
         .fillMaxWidth()
         .focusRequester(focusRequester)
         .background(color = Purple500),
-        colors = TextFieldDefaults.textFieldColors(cursorColor = Color.White)
+        colors = TextFieldDefaults.textFieldColors(cursorColor = Color.White, textColor = Color.White)
     )
 
     LaunchedEffect(key1 = Unit ){

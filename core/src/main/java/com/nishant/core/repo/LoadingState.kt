@@ -20,6 +20,7 @@ fun <T> Flow<T>.asResult() : Flow<LoadingState<T>> {
     }.onStart {
        emit( LoadingState.Loading)
     }.catch {
+        println("exception $it")
         emit(LoadingState.Error(it.message.toString()))
     }
 }

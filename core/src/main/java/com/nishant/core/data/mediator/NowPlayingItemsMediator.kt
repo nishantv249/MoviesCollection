@@ -37,7 +37,7 @@ class NowPlayingItemsMediator @Inject constructor(
         return try {
             val page = when (loadType) {
                 LoadType.REFRESH -> 1
-                LoadType.PREPEND -> 1
+                LoadType.PREPEND -> return MediatorResult.Success(true)
                 LoadType.APPEND -> {
                     val lastItem = state.lastItemOrNull()
                     if (lastItem == null) {

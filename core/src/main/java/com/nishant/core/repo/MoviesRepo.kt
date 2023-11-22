@@ -5,12 +5,14 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.nishant.core.data.mediator.NowPlayingItemsMediator
+import com.nishant.core.db.MoviesDb
 import com.nishant.core.db.dao.NowPlayingMovieItemDao
 import com.nishant.core.db.entity.NowPlayingMovieItemEntity
 import com.nishant.core.network.api.MoviesApiService
 import com.nishant.core.network.models.MovieItemDto
 import com.nishant.core.network.models.MoviesDto
 import com.nishant.core.repo.paging.NowPlayingMoviesDataSource
+import com.nishant.core.repo.paging.OfflineNPMDataSource
 import com.nishant.core.repo.paging.PopularPagingDataSource
 import com.nishant.core.repo.paging.TopRatedDataSource
 import com.nishant.core.repo.paging.UpcomingMoviesDataSource
@@ -19,7 +21,8 @@ import javax.inject.Inject
 
 class MoviesRepo @Inject constructor(
     private val apiService: MoviesApiService, private val nowPlayingItemsMediator:
-    NowPlayingItemsMediator,private val nowPlayingMovieItemDao: NowPlayingMovieItemDao
+    NowPlayingItemsMediator,private val nowPlayingMovieItemDao: NowPlayingMovieItemDao,private val
+    moviesDb: MoviesDb
 ) : IMoviesRepo {
 
     override fun search(q : String): Flow<LoadingState<MoviesDto>> {
@@ -35,7 +38,7 @@ class MoviesRepo @Inject constructor(
 
     @OptIn(ExperimentalPagingApi::class)
     override fun getNowPlayingMovies(genreId: String): Flow<PagingData<MovieItemDto>> {
-        return Pager(PagingConfig(20),  pagingSourceFactory = {
+        return Pager(PagingConfig(20), pagingSourceFactory = {
                 NowPlayingMoviesDataSource(genreId,apiService)
             }).flow
     }

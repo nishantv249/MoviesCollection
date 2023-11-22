@@ -10,9 +10,10 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
-import com.nishant.moviescollection.ui.theme.Teal200
 import java.util.regex.Pattern
 
+
+val Teal200 = Color(0xFF03DAC5)
 
 @Composable
 fun ExpandingText(
