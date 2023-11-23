@@ -1,10 +1,13 @@
 package com.nishant.core.network.models
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class GenreDto(val id: Int?,
                     val name: String)
 
+@Keep
 data class MoviesDto(
     @SerializedName("page")
     val page: Int,
@@ -17,6 +20,7 @@ data class MoviesDto(
 )
 
 
+@Keep
 data class MovieItemDto(
     @SerializedName("adult")
     val adult: Boolean,
@@ -46,8 +50,9 @@ data class MovieItemDto(
     val voteCount: Int
 )
 
+@Keep
 data class GenresDto(val genres: List<GenreDto>)
-
+@Keep
 data class MovieDetailDto(
     val adult: Boolean,
     val backdrop_path: String,
@@ -72,6 +77,7 @@ data class MovieDetailDto(
     val vote_count: Int
 )
 
+@Keep
 data class ArtistDto(
     @SerializedName("cast")
     val cast: List<CastDto>,
@@ -79,6 +85,7 @@ data class ArtistDto(
     val id: Int
 )
 
+@Keep
 data class CastDto(
     @SerializedName("adult")
     val adult: Boolean,
@@ -106,6 +113,7 @@ data class CastDto(
     val profilePath: String
 )
 
+@Keep
 data class ArtistDetailDto(
     @SerializedName("adult")
     val adult: Boolean,

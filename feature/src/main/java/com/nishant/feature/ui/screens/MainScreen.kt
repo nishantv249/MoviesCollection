@@ -124,7 +124,8 @@ fun MoviesVerticalGrid(
     }else{
         LazyVerticalGrid(columns = GridCells.Fixed(2) ,
             verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier.padding(8.dp)) {
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(8.dp)) {
 
             items(moviesList.itemCount) {
                 moviesList[it]?.let { it1 -> MovieItem(movieItem = it1, onMovieClicked) }

@@ -76,4 +76,5 @@ class MovieDetailViewModel @Inject constructor(private val moviesRepo : IMoviesR
 }
 
 @Stable
-data class MovieDetailUiState(val movieDetail: MovieDetailDto,val movieList : List<MovieItemDto>,val cast : List<CastDto>)
+data class MovieDetailUiState(val movieDetail: MovieDetailDto,val movieList : List<MovieItemDto>,
+                              val cast : List<CastDto>)
