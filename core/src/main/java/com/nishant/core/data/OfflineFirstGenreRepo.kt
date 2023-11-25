@@ -19,7 +19,9 @@ class OfflineFirstGenreRepo @Inject constructor(private val genreDao: GenreDao,
         return genreDao.getAllGenres().map {
             if(it.isEmpty()) {
                 withContext(dispatcher) {
-                    genreDao.insert(apiService.genreList().genres.map { genreDto -> genreDto.toEntity() })
+                    genreDao.insert(apiService.genreList().genres.map {
+                        genreDto -> genreDto.toEntity()
+                    })
                 }
             }
             it

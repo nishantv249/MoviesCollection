@@ -1,10 +1,11 @@
-package com.nishant.moviescollection.ui.screens.bottom.now
+package com.nishant.feature.now
 
 import androidx.paging.PagingData
-import com.nishant.moviescollection.MainCoroutineRule
-import com.nishant.moviescollection.network.models.MovieItem
-import com.nishant.moviescollection.repo.IMoviesRepo
 import com.google.common.truth.Truth.assertThat
+import com.nishant.core.network.models.MovieItemDto
+import com.nishant.core.repo.IMoviesRepo
+import com.nishant.feature.MainCoroutineRule
+import com.nishant.feature.ui.screens.bottom.now.NowPlayingViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
@@ -18,11 +19,11 @@ import org.mockito.Mockito
 class NowPlayingViewModelTest {
 
     @get:Rule
-    val mainCoroutineRule : MainCoroutineRule = MainCoroutineRule()
+    val mainCoroutineRule = MainCoroutineRule()
 
-    lateinit var moviesRepo: IMoviesRepo
+    private lateinit var moviesRepo: IMoviesRepo
 
-    lateinit var nowPlayingViewModel: NowPlayingViewModel
+    private lateinit var nowPlayingViewModel: NowPlayingViewModel
 
     @Before
     fun setUp() {
@@ -32,12 +33,14 @@ class NowPlayingViewModelTest {
 
     @Test
     fun getNowPlayingPagingFlow() = runTest{
-        val emptyData = PagingData.from<MovieItem>(emptyList())
+        val emptyData = PagingData.from<MovieItemDto>(emptyList())
         Mockito.`when`(moviesRepo.getNowPlayingMovies("")).thenReturn(flow{
             emit(emptyData)
         })
-        val list = nowPlayingViewModel.nowPlayingPagingFlow.first()
-        assertThat(list).isEqualTo(emptyData)
+        nowPlayingViewModel.onNewGenre("")
+        nowPlayingViewModel.nowPlayingPagingFlow.collect { list ->
+            assertThat(list).isEqualTo(emptyData)
+        }
     }
 
     @Test

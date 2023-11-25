@@ -1,4 +1,4 @@
-package com.nishant.moviescollection
+package com.nishant.feature
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -12,11 +12,13 @@ import org.junit.runner.Description
 class MainCoroutineRule @OptIn(ExperimentalCoroutinesApi::class) constructor
     (private val testDispatcher: TestDispatcher = UnconfinedTestDispatcher() ) : TestWatcher() {
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun starting(description: Description) {
         super.starting(description)
         Dispatchers.setMain(testDispatcher)
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun finished(description: Description) {
         super.finished(description)
         Dispatchers.resetMain()

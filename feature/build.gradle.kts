@@ -71,4 +71,13 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0")
 
 
+    testImplementation ("junit:junit:4.13.2")
+    testImplementation ("org.mockito:mockito-core:3.4.6")
+    testImplementation ("androidx.arch.core:core-testing:2.2.0")
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
+    testImplementation("com.google.truth:truth:1.1.5")
+    testImplementation ("androidx.paging:paging-testing-android:3.3.0-alpha02")
+
+
+
 }

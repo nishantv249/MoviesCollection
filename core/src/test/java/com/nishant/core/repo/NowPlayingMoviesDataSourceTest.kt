@@ -1,10 +1,11 @@
-package com.nishant.moviescollection.repo.paging
+package com.nishant.core.repo
 
 import androidx.paging.PagingSource
-import com.nishant.moviescollection.MainCoroutineRule
-import com.nishant.moviescollection.network.ApiService
-import com.nishant.moviescollection.network.models.BaseModel
 import com.google.common.truth.Truth.assertThat
+import com.nishant.core.MainCoroutineRule
+import com.nishant.core.network.api.MoviesApiService
+import com.nishant.core.network.models.MoviesDto
+import com.nishant.core.repo.paging.NowPlayingMoviesDataSource
 import kotlinx.coroutines.test.runTest
 
 
@@ -21,13 +22,13 @@ class NowPlayingMoviesDataSourceTest {
     val mainCoroutineRule = MainCoroutineRule()
 
     @Mock
-    lateinit var apiService: ApiService
+    lateinit var apiService: MoviesApiService
 
     lateinit var nowPlayingMoviesDataSource: NowPlayingMoviesDataSource
 
     val genreId = ""
 
-    val nowPlayingList = BaseModel(1, emptyList(),1,1)
+    val nowPlayingList = MoviesDto(1, emptyList(),1,1)
 
     @Before
     fun setUp() {
