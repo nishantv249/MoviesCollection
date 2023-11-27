@@ -8,6 +8,7 @@ import com.nishant.feature.MainCoroutineRule
 import com.nishant.feature.ui.screens.bottom.now.NowPlayingViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 
 
@@ -34,9 +35,7 @@ class NowPlayingViewModelTest {
     @Test
     fun getNowPlayingPagingFlow() = runTest{
         val emptyData = PagingData.from<MovieItemDto>(emptyList())
-        Mockito.`when`(moviesRepo.getNowPlayingMovies("")).thenReturn(flow{
-            emit(emptyData)
-        })
+        Mockito.`when`(moviesRepo.getNowPlayingMovies("")).thenReturn(flowOf(emptyData))
         nowPlayingViewModel.onNewGenre("")
         nowPlayingViewModel.nowPlayingPagingFlow.collect { list ->
             assertThat(list).isEqualTo(emptyData)

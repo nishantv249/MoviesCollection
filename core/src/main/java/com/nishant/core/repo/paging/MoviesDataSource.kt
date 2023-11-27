@@ -27,5 +27,4 @@ abstract class MoviesDataSource : PagingSource<Int,MovieItemDto>() {
 
     abstract suspend fun getMovies(page: Int): List<MovieItemDto>
 
-
 }

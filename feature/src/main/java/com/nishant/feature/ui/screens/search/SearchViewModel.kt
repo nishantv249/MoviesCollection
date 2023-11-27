@@ -23,9 +23,7 @@ class SearchViewModel @Inject constructor(private val moviesRepo: IMoviesRepo) :
             if(it.isNotEmpty()) {
                 moviesRepo.search(it)
             }else{
-                flow {
-                    emit(LoadingState.Empty)
-                }
+                flowOf(LoadingState.Empty)
             }
         }.stateIn(scope = viewModelScope, started = SharingStarted.WhileSubscribed(
             Duration.ZERO), LoadingState.Empty)

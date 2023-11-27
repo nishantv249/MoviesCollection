@@ -1,16 +1,12 @@
 package com.nishant.core.data
 
 import com.nishant.core.network.api.MoviesApiService
-import com.nishant.feature.MainCoroutineRule
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.flow
 import com.google.common.truth.Truth.assertThat
+import com.nishant.core.MainCoroutineRule
 import com.nishant.core.db.dao.FakeGenreDao
 import com.nishant.core.db.entity.GenreEntity
 import com.nishant.core.network.models.GenreDto
 import com.nishant.core.network.models.GenresDto
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
