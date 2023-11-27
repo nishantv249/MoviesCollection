@@ -17,7 +17,8 @@ class SearchViewModel @Inject constructor(private val moviesRepo: IMoviesRepo) :
     private val searchRequestFlow : MutableStateFlow<String> = MutableStateFlow("")
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-    val searchResultFlow : StateFlow<LoadingState<MoviesDto>> = searchRequestFlow.debounce(300)
+    val searchResultFlow : StateFlow<LoadingState<MoviesDto>> = searchRequestFlow
+        .debounce(300)
         .distinctUntilChanged()
         .flatMapLatest {
             if(it.isNotEmpty()) {

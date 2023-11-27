@@ -7,15 +7,10 @@ import androidx.paging.PagingData
 import com.nishant.core.data.mediator.NowPlayingItemsMediator
 import com.nishant.core.db.MoviesDb
 import com.nishant.core.db.dao.NowPlayingMovieItemDao
-import com.nishant.core.db.entity.NowPlayingMovieItemEntity
 import com.nishant.core.network.api.MoviesApiService
 import com.nishant.core.network.models.MovieItemDto
 import com.nishant.core.network.models.MoviesDto
-import com.nishant.core.repo.paging.NowPlayingMoviesDataSource
-import com.nishant.core.repo.paging.OfflineNPMDataSource
-import com.nishant.core.repo.paging.PopularPagingDataSource
-import com.nishant.core.repo.paging.TopRatedDataSource
-import com.nishant.core.repo.paging.UpcomingMoviesDataSource
+import com.nishant.core.repo.paging.MoviesDataSource
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
@@ -32,27 +27,36 @@ class MoviesRepo @Inject constructor(
     }
 
     override fun getPopularMovies(genreId:String): Flow<PagingData<MovieItemDto>> {
-        return Pager(PagingConfig(pageSize = 20), pagingSourceFactory =
-            { PopularPagingDataSource(genreId,apiService) }).flow
+        return Pager(PagingConfig(pageSize = 20)) {
+            MoviesDataSource { page ->
+                apiService.getPopularMovies(page, genreId).results
+            }
+        }.flow
     }
 
     @OptIn(ExperimentalPagingApi::class)
     override fun getNowPlayingMovies(genreId: String): Flow<PagingData<MovieItemDto>> {
-        return Pager(PagingConfig(20), pagingSourceFactory = {
-                NowPlayingMoviesDataSource(genreId,apiService)
-            }).flow
+        return Pager(PagingConfig(20)) {
+            MoviesDataSource { page ->
+                apiService.nowPlayingMovieList(page, genreId).results
+            }
+        }.flow
     }
 
     override fun getTopRatedMovies(genreId: String): Flow<PagingData<MovieItemDto>> {
-        return Pager(PagingConfig(20),  pagingSourceFactory = {
-            TopRatedDataSource(genreId,apiService)
-        }).flow
+        return Pager(PagingConfig(20)){
+            MoviesDataSource{page ->
+                apiService.topRatedMovieList(page,genreId).results
+            }
+        }.flow
     }
 
     override fun getUpcomingMovies(genreId: String): Flow<PagingData<MovieItemDto>> {
-        return Pager(PagingConfig(20),  pagingSourceFactory = {
-            UpcomingMoviesDataSource(genreId,apiService)
-        }).flow
+        return Pager(PagingConfig(20)){
+            MoviesDataSource{page ->
+                apiService.getUpcomingMovies(page,genreId).results
+            }
+        }.flow
     }
 
     override suspend fun getMovieDetail(movieId: Int) = apiService.movieDetail(movieId)

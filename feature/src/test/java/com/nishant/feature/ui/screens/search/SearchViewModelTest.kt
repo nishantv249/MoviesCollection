@@ -59,7 +59,7 @@ class SearchViewModelTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun getSearchResultForSuccessState() = runTest {
+    fun getSearchResultForSuccessFailureState() = runTest {
         Mockito.`when`(moviesRepo.search(searchQuery))
             .thenReturn(flowOf(LoadingState.Success(moviesResponse)))
         val list = mutableListOf<LoadingState<MoviesDto>>()
