@@ -60,7 +60,7 @@ class MovieDetailViewModel @Inject constructor(private val moviesRepo : IMoviesR
         }else{
             LoadingState.Loading
         }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly,LoadingState.Loading)
+    }.stateIn(viewModelScope, SharingStarted.Lazily,LoadingState.Loading)
 
     fun getRecommendedMovies(movieId : Int){
         viewModelScope.launch {

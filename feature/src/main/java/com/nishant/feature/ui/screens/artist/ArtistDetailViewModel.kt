@@ -7,9 +7,11 @@ import com.nishant.core.repo.IMoviesRepo
 import com.nishant.core.repo.LoadingState
 import com.nishant.core.repo.asResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,15 +19,19 @@ import javax.inject.Inject
 @HiltViewModel
 class ArtistDetailViewModel @Inject constructor(private  val moviesRepo: IMoviesRepo) : ViewModel() {
 
-    private val _artistDetailFlow : MutableStateFlow<ArtistDetailDto?> = MutableStateFlow(null)
+    private val _artistIdFlow : MutableStateFlow<Int?> = MutableStateFlow(null)
 
-    val artistDetailFlow = _artistDetailFlow.filter { it != null }.asResult().stateIn(
-        viewModelScope, SharingStarted.Eagerly,LoadingState.Loading
-    )
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val artistDetailFlow = _artistIdFlow
+        .filter { it != null }
+        .flatMapLatest { id ->
+            moviesRepo.getArtistDetail(id!!)
+        }
+        .stateIn(viewModelScope, SharingStarted.Lazily,LoadingState.Loading)
 
     fun getArtistDetail(id : Int){
         viewModelScope.launch {
-            _artistDetailFlow.value = moviesRepo.getArtistDetail(id)
+            _artistIdFlow.value = id
         }
     }
 

@@ -27,6 +27,6 @@ interface IMoviesRepo {
 
     suspend fun getCredits(movieId: Int) : ArtistDto
 
-    suspend fun getArtistDetail(personId : Int) : ArtistDetailDto
+    fun getArtistDetail(personId : Int) : Flow<LoadingState<ArtistDetailDto>>
 
 }

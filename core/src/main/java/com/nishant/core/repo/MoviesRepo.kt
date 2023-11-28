@@ -65,7 +65,9 @@ class MoviesRepo @Inject constructor(
 
     override suspend fun getCredits(movieId: Int) = apiService.movieCredit(movieId)
 
-    override suspend fun getArtistDetail(personId: Int) = apiService.artistDetail(personId)
-
+    override fun getArtistDetail(personId: Int) =
+        flow{
+            emit(apiService.artistDetail(personId))
+        }.asResult()
 
 }
