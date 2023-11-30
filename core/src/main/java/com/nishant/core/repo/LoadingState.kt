@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.onStart
 
 
 sealed interface LoadingState<out T> {
-   data class Success<T>(val t: T) : LoadingState<T>
+    data class Success<T>(val t: T) : LoadingState<T>
     data class Error(val e : String) : LoadingState<Nothing>
     object Empty  : LoadingState<Nothing>
     object Loading : LoadingState<Nothing>
@@ -20,7 +20,6 @@ fun <T> Flow<T>.asResult() : Flow<LoadingState<T>> {
     }.onStart {
        emit( LoadingState.Loading)
     }.catch {
-        println("exception $it")
         emit(LoadingState.Error(it.message.toString()))
     }
 }

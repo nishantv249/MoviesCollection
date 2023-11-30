@@ -128,7 +128,9 @@ fun MoviesVerticalGrid(
             modifier = Modifier.padding(8.dp)) {
 
             items(moviesList.itemCount) {
-                moviesList[it]?.let { it1 -> MovieItem(movieItem = it1, onMovieClicked) }
+                moviesList[it]?.let { it1 ->
+                    MovieItem(movieItem = it1, onMovieClicked)
+                }
             }
             if(moviesList.loadState.append is LoadState.Loading){
                 item (span = { GridItemSpan(2) }){
