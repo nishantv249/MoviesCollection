@@ -1,5 +1,5 @@
 pluginManagement {
-    //includeBuild("build-logic")
+    includeBuild("build-logic")
         repositories {
             gradlePluginPortal()
             google()
@@ -18,3 +18,4 @@ rootProject.name = "moviesdup"
 include ':app'
 include ':core'
 include ':feature'
+include ':il'

@@ -1,11 +1,11 @@
-package com.nishant.moviescollection.il
+package com.nishant.il.il
 
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Looper
 import android.os.Message
 import androidx.annotation.Px
-import com.nishant.moviescollection.il.engine.Engine
+import com.nishant.il.il.engine.Engine
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +21,7 @@ import kotlin.coroutines.resumeWithException
 
 object ImageLoaderImpl : ImageLoader {
 
-    private val ceh = CoroutineExceptionHandler { coroutineScope, throwable ->
+    private val ceh = CoroutineExceptionHandler { coroutineScope, _ ->
         var entry: String? = null
         deferredMap.forEach() {
             if (it.value == coroutineScope.job) {
@@ -46,29 +46,24 @@ object ImageLoaderImpl : ImageLoader {
 
     private fun handleNewRequest(request: Request) {
         val job = coroutineScope.launch {
-            engine(
-                request.url,
-                request.width,
-                request.height,
-                request.onBitmapFetched
-            )
+            engine(request)
         }
         deferredMap[request.url] = job
     }
 
     override suspend fun load(url: String, @Px width: Int, @Px height: Int): Bitmap {
         return suspendCancellableCoroutine { cancellableContinuation ->
-            if (cache.get(url) != null) {
-                cancellableContinuation.resume(cache.get(url)!!)
-            } else {
-                val request = Request(url, height, width) {
-                    if (it != null) {
-                        deferredMap.remove(url)
-                        cancellableContinuation.resume(it)
-                    } else {
-                        cancellableContinuation.resumeWithException(NullPointerException("null bitmap"))
-                    }
+            val request = Request(url, height, width) {
+                if (it != null) {
+                    deferredMap.remove(url)
+                    cancellableContinuation.resume(it)
+                } else {
+                    cancellableContinuation.resumeWithException(NullPointerException("null bitmap"))
                 }
+            }
+            if (cache.get(request) != null) {
+                cancellableContinuation.resume(cache.get(request)!!)
+            } else {
                 val message = Message.obtain()
                 message.what = request.hashCode()
                 message.obj = request
@@ -92,7 +87,20 @@ data class Request(
     val height: Int,
     val width: Int,
     val onBitmapFetched: (bitMap: Bitmap?) -> Unit
-)
+){
+    override fun equals(other: Any?): Boolean {
+        val old = other as Request
+        return width == old.width && height == old.height && url == old.url
+    }
+
+    override fun hashCode(): Int {
+        var result = url.hashCode()
+        result = 31 * result + height
+        result = 31 * result + width
+        return result
+    }
+
+}
 
 
 

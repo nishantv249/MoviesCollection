@@ -1,4 +1,4 @@
-package com.nishant.moviescollection.il
+package com.nishant.il.il
 
 import android.graphics.Bitmap
 import android.net.Uri

@@ -32,6 +32,7 @@ import com.nishant.feature.ui.component.ExpandingText
 import com.nishant.feature.ui.component.TopBarWithBack
 import com.nishant.feature.ui.component.text.SubtitlePrimary
 import com.nishant.feature.ui.component.text.SubtitleSecondary
+import com.nishant.il.il.painter.rememberAsyncILPainter
 
 @Composable
 fun MovieDetail(
@@ -53,7 +54,7 @@ fun MovieDetail(
         TopBarWithBack(title = if(movieDetail is LoadingState.Success){
             (movieDetail as LoadingState.Success).t.movieDetail.title
         }else{
-            ""
+            "Movie Detail"
         }) {
             onBackPressed()
         }
@@ -64,8 +65,7 @@ fun MovieDetail(
                 .verticalScroll(rememberScrollState())
                 .weight(1f)) {
                 val thumb = movieDetailI.backdrop_path
-                val painter = rememberAsyncImagePainter(model = MoviesApiService.IMAGE_URL.plus(thumb),
-                    contentScale = ContentScale.FillBounds)
+                val painter = rememberAsyncILPainter(url = MoviesApiService.IMAGE_URL.plus(thumb))
                 Image(
                     painter = painter, contentDescription = "", modifier = Modifier
                         .fillMaxWidth()

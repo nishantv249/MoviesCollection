@@ -1,16 +1,16 @@
-package com.nishant.moviescollection.il.engine
+package com.nishant.il.il.engine
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import androidx.annotation.Px
-import com.nishant.moviescollection.il.CachePool
+import com.nishant.il.il.CachePool
+import com.nishant.il.il.Request
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runInterruptible
 import okhttp3.OkHttpClient
 import okio.BufferedSource
-import retrofit2.Retrofit
 import java.io.InterruptedIOException
 import java.net.SocketTimeoutException
 import java.util.concurrent.TimeoutException
@@ -19,24 +19,19 @@ import kotlin.math.roundToInt
 
 internal class Engine(private val cachePool: CachePool) {
 
-    //val apiService : ApiService = Retrofit.Builder().baseUrl(ApiURL.BASE_URL).client(OkHttpClient()).build().create(ApiService::class.java)
+    private val client =  OkHttpClient()
 
-    suspend operator fun invoke(
-        url: String,
-        width: Int,
-        height: Int,
-        function: (bitMap: Bitmap?) -> Unit
-    )  {
+
+    suspend operator fun invoke(request : Request)  {
         val bitmap =
             runInterruptible(coroutineContext) {
-                //getBitmap(url, cachePool.getBitMap(), width, height)
-                null
+                getBitmap(request, cachePool.getBitMap())
             }
 
         if (bitmap != null) {
-            //cachePool.put(url, bitmap = bitmap)
+            cachePool.put(request, bitmap = bitmap)
         }
-        function.invoke(bitmap)
+        request.onBitmapFetched.invoke(bitmap)
     }
 
     private fun calculateSampleSize(
@@ -57,20 +52,21 @@ internal class Engine(private val cachePool: CachePool) {
         }
         return inSampleSize
     }
-/*
+
     private  fun getBitmap(
-        url: String,
-        reusableBitmap: Bitmap?,
-        width: Int,
-        height: Int,
+        request: Request,
+        reusableBitmap: Bitmap?
     ) : Bitmap?  {
         var buffer : BufferedSource? = null
         return try {
+            val width = request.width
+            val height = request.height
+            val imageRequest = okhttp3.Request.Builder().url(request.url).build()
             val options = BitmapFactory.Options()
             options.inJustDecodeBounds = true
             options.inMutable = true
-            val bounds = apiService.getBytes(url).execute()
-            buffer = bounds.body()?.source()
+            val bounds = client.newCall(imageRequest).execute()
+            buffer = bounds.body?.source()
             BitmapFactory.decodeStream (buffer?.peek()?.inputStream(), null,  options)
             options.inSampleSize = calculateSampleSize(options, width, height)
             options.inJustDecodeBounds = false
@@ -95,7 +91,7 @@ internal class Engine(private val cachePool: CachePool) {
 
             }
         }
-    }*/
+    }
 }
 
 private fun crop(

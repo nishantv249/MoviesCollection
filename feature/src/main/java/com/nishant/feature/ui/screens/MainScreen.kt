@@ -27,6 +27,7 @@ import com.nishant.feature.ui.component.drawer.Drawer
 import com.nishant.feature.ui.currentRoute
 import com.nishant.feature.ui.navigation.Screen
 import com.nishant.feature.ui.screens.bottom.now.NowPlaying
+import com.nishant.il.il.painter.rememberAsyncILPainter
 import kotlinx.coroutines.launch
 
 @Composable
@@ -151,7 +152,7 @@ fun MovieItem(movieItem: MovieItemDto, onMovieClicked: (id: Int) -> Unit) {
         .fillMaxWidth()
         .wrapContentHeight()){
         val painter =
-            rememberAsyncImagePainter(model = MoviesApiService.IMAGE_URL.plus(movieItem.posterPath))
+            rememberAsyncILPainter(url = MoviesApiService.IMAGE_URL.plus(movieItem.posterPath))
         Image(
             painter = painter, contentDescription = "",
             Modifier

@@ -1,4 +1,4 @@
-package com.nishant.moviescollection.il.painter
+package com.nishant.il.il.painter
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -13,7 +13,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.painter.Painter
-import com.nishant.moviescollection.il.ImageLoaderImpl
+import com.nishant.il.il.ImageLoaderImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.mapLatest
-//import kotlinx.coroutines.flow.internal.NopCollector.emit
 import kotlinx.coroutines.launch
 
 

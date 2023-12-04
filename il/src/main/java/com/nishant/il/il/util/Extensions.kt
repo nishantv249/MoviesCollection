@@ -1,4 +1,4 @@
-package com.nishant.moviescollection.il.util
+package com.nishant.il.il.util
 
 fun <T> ArrayDeque<T>.push(t : T) = addLast(t)
 
