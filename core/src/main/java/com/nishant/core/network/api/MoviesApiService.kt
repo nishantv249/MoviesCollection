@@ -71,7 +71,7 @@ interface MoviesApiService {
     ): ArtistDetailDto
 
     companion object{
-        const val API_KEY = "59cd6896d8432f9c69aed9b86b9c2931"
+        const val API_KEY = "9d7bad21bb7c735662ada0181fc364ff"
         const val BASE_URL = "https://api.themoviedb.org/3/"
         const val IMAGE_URL = "https://image.tmdb.org/t/p/w342"
     }
