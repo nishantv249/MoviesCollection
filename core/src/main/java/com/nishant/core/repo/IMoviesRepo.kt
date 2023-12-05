@@ -21,11 +21,11 @@ interface IMoviesRepo {
 
     fun getUpcomingMovies(genreId: String) : Flow<PagingData<MovieItemDto>>
 
-    suspend fun getMovieDetail(movieId : Int) : MovieDetailDto
+    fun getMovieDetail(movieId : Int) : Flow<LoadingState<MovieDetailDto>>
 
-    suspend fun getRecommendedMovies(movieId : Int) : MoviesDto
+    fun getRecommendedMovies(movieId : Int) : Flow<LoadingState<MoviesDto>>
 
-    suspend fun getCredits(movieId: Int) : ArtistDto
+    fun getCredits(movieId: Int) : Flow<LoadingState<ArtistDto>>
 
     fun getArtistDetail(personId : Int) : Flow<LoadingState<ArtistDetailDto>>
 

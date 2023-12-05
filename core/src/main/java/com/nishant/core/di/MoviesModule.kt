@@ -78,7 +78,7 @@ object MoviesModule {
     @Provides
     fun getRepo(apiService: MoviesApiService,nowPlayingItemsMediator: NowPlayingItemsMediator
                 ,moviesDb: MoviesDb,offlineNPMDataSource: OfflineNPMDataSource) : IMoviesRepo {
-        return MoviesRepo(apiService,nowPlayingItemsMediator,moviesDb.nowPlayingMovieDao(),moviesDb)
+        return MoviesRepo(apiService)
     }
 
     @Provides

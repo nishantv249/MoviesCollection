@@ -12,6 +12,7 @@ import com.nishant.core.repo.IMoviesRepo
 import com.nishant.core.repo.LoadingState
 import com.nishant.core.repo.asResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,22 +21,24 @@ import kotlinx.coroutines.flow.combine
 @HiltViewModel
 class MovieDetailViewModel @Inject constructor(private val moviesRepo : IMoviesRepo) : ViewModel() {
 
-    private val _movieDetailFlow : MutableStateFlow<MovieDetailDto?> = MutableStateFlow(null)
-    private val _artistsFlow : MutableStateFlow<ArtistDto?> = MutableStateFlow(null)
+    private val _movieDetailFlow : MutableStateFlow<Int?> = MutableStateFlow(null)
 
-    private val artistsFlow = _artistsFlow.filter { it != null }.asResult()
+    private val _artistsFlow : MutableStateFlow<Int?> = MutableStateFlow(null)
 
-    private val movieDetailFlow = _movieDetailFlow.filter { it != null }.asResult()
+    private val _recommendedMovieFlow :MutableStateFlow<Int?> = MutableStateFlow(null)
 
-    fun getMovieDetail(id : Int){
-        viewModelScope.launch {
-            _movieDetailFlow.value = moviesRepo.getMovieDetail(id)
-        }
-    }
 
-    private val _recommendedMovieFlow :MutableStateFlow<MoviesDto?> = MutableStateFlow(null)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val artistsFlow = _artistsFlow.filter { it != null }
+        .flatMapLatest { moviesRepo.getCredits(it!!) }
 
-    private val recommendedMovieFlow = _recommendedMovieFlow.filter { it!= null}.asResult()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val movieDetailFlow = _movieDetailFlow.filter { it != null }
+        .flatMapLatest { moviesRepo.getMovieDetail(it!!) }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val recommendedMovieFlow = _recommendedMovieFlow.filter { it!= null}
+        .flatMapLatest { moviesRepo.getRecommendedMovies(it!!) }
 
     val movieDetail = combine(
         movieDetailFlow,
@@ -43,14 +46,10 @@ class MovieDetailViewModel @Inject constructor(private val moviesRepo : IMoviesR
         artistsFlow
     ){ movieDetails, recommendedMovie,artist ->
         if(movieDetails is com.nishant.core.repo.LoadingState.Success && recommendedMovie is LoadingState.Success && artist is LoadingState.Success){
-            if((movieDetails.t != null) && (recommendedMovie.t != null) && (artist.t != null)) {
-                LoadingState.Success(MovieDetailUiState(
-                    movieDetails.t!!, recommendedMovie.t!!.results,
-                    artist.t!!.cast
-                ))
-            }else{
-                LoadingState.Error("")
-            }
+            LoadingState.Success(MovieDetailUiState(
+                movieDetails.t, recommendedMovie.t.results,
+                artist.t.cast
+            ))
         }else if(movieDetails is LoadingState.Error){
             LoadingState.Error(movieDetails.e)
         } else if(recommendedMovie is LoadingState.Error) {
@@ -63,16 +62,17 @@ class MovieDetailViewModel @Inject constructor(private val moviesRepo : IMoviesR
     }.stateIn(viewModelScope, SharingStarted.Lazily,LoadingState.Loading)
 
     fun getRecommendedMovies(movieId : Int){
-        viewModelScope.launch {
-           _recommendedMovieFlow.value = moviesRepo.getRecommendedMovies(movieId)
-        }
+        _recommendedMovieFlow.value = movieId
     }
 
     fun getCredits(movieId: Int){
-        viewModelScope.launch {
-            _artistsFlow.value = moviesRepo.getCredits(movieId)
-        }
+        _artistsFlow.value = movieId
     }
+
+    fun getMovieDetail(id : Int){
+        _movieDetailFlow.value = id
+    }
+
 }
 
 @Stable

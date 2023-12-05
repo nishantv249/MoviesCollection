@@ -15,9 +15,7 @@ import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 class MoviesRepo @Inject constructor(
-    private val apiService: MoviesApiService, private val nowPlayingItemsMediator:
-    NowPlayingItemsMediator,private val nowPlayingMovieItemDao: NowPlayingMovieItemDao,private val
-    moviesDb: MoviesDb
+    private val apiService: MoviesApiService
 ) : IMoviesRepo {
 
     override fun search(q : String): Flow<LoadingState<MoviesDto>> {
@@ -59,11 +57,20 @@ class MoviesRepo @Inject constructor(
         }.flow
     }
 
-    override suspend fun getMovieDetail(movieId: Int) = apiService.movieDetail(movieId)
+    override fun getMovieDetail(movieId: Int) =
+        flow {
+            emit(apiService.movieDetail(movieId))
+        }.asResult()
 
-    override suspend fun getRecommendedMovies(movieId: Int) = apiService.recommendedMovie(movieId,1)
+    override fun getRecommendedMovies(movieId: Int) =
+        flow {
+            emit(apiService.recommendedMovie(movieId, 1))
+        }.asResult()
 
-    override suspend fun getCredits(movieId: Int) = apiService.movieCredit(movieId)
+    override fun getCredits(movieId: Int) =
+        flow {
+            emit(apiService.movieCredit(movieId))
+        }.asResult()
 
     override fun getArtistDetail(personId: Int) =
         flow{
