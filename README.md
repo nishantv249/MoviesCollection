@@ -19,10 +19,6 @@ Movies collection app to explore and search movies. Data is collected from TMDB.
 
 Multi module project with clean Architecture
 
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)
-
 
 ## Built With
 
